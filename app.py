@@ -7,7 +7,7 @@ app = Flask(__name__)
 @app.route('/generate', methods=['POST'])
 def generate():
     files = request.files.getlist("images")
-
+    print("FILES RECEIVED:", len(files))
     W, H = 3508, 2480  # A4 landscape
     cols, rows = 3, 2
     margin = 50
@@ -29,5 +29,9 @@ def generate():
     output = io.BytesIO()
     canvas.save(output, format="PDF")
     output.seek(0)
+    pdf_bytes = output.getvalue()
 
+    print("PDF size (bytes):", len(pdf_bytes))
+
+    output.seek(0)
     return send_file(output, mimetype="application/pdf")
