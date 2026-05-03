@@ -1,12 +1,19 @@
 from flask import Flask, request, send_file
 from PIL import Image
 import io
-
+import base64
+import json
 app = Flask(__name__)
 
 @app.route('/generate', methods=['POST'])
 def generate():
-    files = request.files.getlist("images")
+    data = json.loads(request.form["files"])
+
+    files= []
+
+    for f in data:
+        img_bytes = base64.b64decode(f["data"])
+        files.append(Image.open(io.BytesIO(img_bytes)))
     print("FILES RECEIVED:", len(files))
     W, H = 3508, 2480  # A4 landscape
     cols, rows = 3, 2
